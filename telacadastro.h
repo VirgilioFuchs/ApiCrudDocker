@@ -16,7 +16,7 @@ public:
     ~TelaCadastro();
 
 signals:
-    void enviarDados(const QString &nomeUsuario, QString &senhaUsuario);
+
 
 private slots:
     void on_btnCadastrar_clicked();
@@ -25,6 +25,8 @@ private slots:
 
 private:
     Ui::TelaCadastro *ui;
+
+    bool validacaoCadastro(const QString &nomeUsuario, QString &senhaUsuario);
 };
 
 #endif // TELACADASTRO_H

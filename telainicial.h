@@ -21,15 +21,10 @@ public:
 private slots:
     void on_btnLogin_clicked();
 
-    void receberDadosCadastro(const QString &nomeUsuario, QString &senhaUsuario);
-
     void on_btnCadastrar_clicked();
 
 private:
     Ui::TelaInicial *ui;
 
-    // variáveis para receber os dados
-    QString dadoNomeCadastrado;
-    QString dadoSenhaCadastrado;
 };
 #endif // TELAINICIAL_H

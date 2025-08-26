@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-a4d4387fb45d3d54d1c2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "first_application",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "first_application::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-first_application-Debug-bdb985f818f3f42d7caa.json",
+					"name" : "first_application",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "first_application_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-first_application_autogen-Debug-28cfee819f6a37443858.json",
+					"name" : "first_application_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "first_application_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-first_application_autogen_timestamp_deps-Debug-2a9f475980ccce71f35e.json",
+					"name" : "first_application_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory",
+		"source" : "C:/Users/Anglo/Documents/LoginSenhaTesteQT"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

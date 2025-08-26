@@ -1,0 +1,25 @@
+# ninja log v6
+26	2459	7779161438330245	first_application_autogen/timestamp	12d86d7e0d883073
+26	2459	7779161438330245	first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+26	2459	7779161438330245	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/timestamp	12d86d7e0d883073
+26	2459	7779161438330245	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+2479	15600	7779161440634225	CMakeFiles/first_application.dir/first_application_autogen/mocs_compilation.cpp.obj	e76b2ddda99b9211
+2487	15605	7779161440790427	CMakeFiles/first_application.dir/main.cpp.obj	30508f3e8a6e8adc
+2505	15751	7779161440946661	CMakeFiles/first_application.dir/telacadastro.cpp.obj	82dbdd58edc61e13
+2495	15935	7779161440790427	CMakeFiles/first_application.dir/telainicial.cpp.obj	ac4db9931b1c8700
+15935	16842	7779161575333702	first_application.exe	da71839728eb43f7
+68	6726	7779213711536270	first_application_autogen/timestamp	12d86d7e0d883073
+68	6726	7779213711536270	first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+68	6726	7779213711536270	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/timestamp	12d86d7e0d883073
+68	6726	7779213711536270	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+6729	19989	7779213715137912	CMakeFiles/first_application.dir/first_application_autogen/mocs_compilation.cpp.obj	e76b2ddda99b9211
+6739	20524	7779213715137912	CMakeFiles/first_application.dir/main.cpp.obj	30508f3e8a6e8adc
+6747	20830	7779213715294129	CMakeFiles/first_application.dir/telainicial.cpp.obj	ac4db9931b1c8700
+6755	22781	7779213715294129	CMakeFiles/first_application.dir/telacadastro.cpp.obj	82dbdd58edc61e13
+132	704	7779214937010370	first_application_autogen/timestamp	12d86d7e0d883073
+132	704	7779214937010370	first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+132	704	7779214937010370	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/timestamp	12d86d7e0d883073
+132	704	7779214937010370	C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/mocs_compilation.cpp	12d86d7e0d883073
+707	12651	7779214942855364	CMakeFiles/first_application.dir/telainicial.cpp.obj	ac4db9931b1c8700
+716	14628	7779214942945130	CMakeFiles/first_application.dir/telacadastro.cpp.obj	82dbdd58edc61e13
+14629	15511	7779215082070256	first_application.exe	da71839728eb43f7
