@@ -11,11 +11,10 @@
 #include <QDir>
 
 TelaCadastro::TelaCadastro(QWidget *parent)
-    : QMainWindow(parent)
+    : QDialog(parent)
     , ui(new Ui::TelaCadastro)
 {
     ui->setupUi(this);
-
 }
 
 TelaCadastro::~TelaCadastro()
@@ -25,33 +24,39 @@ TelaCadastro::~TelaCadastro()
 
 void TelaCadastro::on_btnCadastrar_clicked()
 {
+
     QString nomeCadastro = ui->leCadastroUsuario->text();
     QString senhaCadastro = ui->leCadastroSenha->text();
 
-    if (validacaoCadastro(nomeCadastro,senhaCadastro)) {
-        QMessageBox::information(this, "Sucesso", "Usuário e Senha cadastrados!");
-        qDebug() << "Nome e senha foram cadastrados...";
-        close();
-        ui->leCadastroUsuario->clear();
-        ui->leCadastroUsuario->clear();
-
-    } else {
-        QMessageBox::critical(this, "Erro", "Erro ao cadastrar o usuário!");
-        ui->leCadastroUsuario->clear();
-        ui->leCadastroUsuario->clear();
+    if(nomeCadastro.isEmpty() || senhaCadastro.isEmpty()){
+        QMessageBox::warning(this, "Aviso!", "Coloque todas as informações necessárias em seus respectivos lugares!");
+        return;
     }
 
+    QSqlDatabase bd = QSqlDatabase::database();
+    if(!bd.isOpen()){
+        qDebug() << "Erro ao conectar ao banco de dados!" << bd.lastError().text();
+        QMessageBox::critical(this, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO usuarios (nome, senha) VALUES (:nome, :senha)");
+    query.bindValue(":nome", nomeCadastro);
+    query.bindValue(":senha", senhaCadastro);
+
+    if (query.exec()){
+        qDebug() << "Enviando as informações ao banco de dados";
+        QMessageBox::information(this, "Sucesso", "Usuário salvo com sucesso!");
+        accept();
+    } else {
+        qDebug() << "Erro ao salvar no banco:" << query.lastError().text();
+        QMessageBox::critical(this, "Erro de banco de dados", "Ocorreu um erro ao cadastrar os dados!");
+    }
 }
 
 void TelaCadastro::on_btnVoltar_clicked()
 {
-    close();
+    reject();
 }
 
-bool TelaCadastro::validacaoCadastro(const QString &nomeCadastro, QString &senhaCadastro){
-    if (!nomeCadastro.isEmpty() && !senhaCadastro.isEmpty()){
-        return true;
-    } else{
-        return false;
-    }
-}

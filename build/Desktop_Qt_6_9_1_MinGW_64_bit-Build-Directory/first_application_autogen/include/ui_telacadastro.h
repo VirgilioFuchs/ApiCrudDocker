@@ -11,9 +11,9 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDialog>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
@@ -40,7 +40,7 @@ public:
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
-    void setupUi(QMainWindow *TelaCadastro)
+    void setupUi(QDialog *TelaCadastro)
     {
         if (TelaCadastro->objectName().isEmpty())
             TelaCadastro->setObjectName("TelaCadastro");
@@ -94,21 +94,18 @@ public:
 
         verticalLayout->addWidget(btnVoltar);
 
-        TelaCadastro->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TelaCadastro);
         menubar->setObjectName("menubar");
         menubar->setGeometry(QRect(0, 0, 426, 25));
-        TelaCadastro->setMenuBar(menubar);
         statusbar = new QStatusBar(TelaCadastro);
         statusbar->setObjectName("statusbar");
-        TelaCadastro->setStatusBar(statusbar);
 
         retranslateUi(TelaCadastro);
 
         QMetaObject::connectSlotsByName(TelaCadastro);
     } // setupUi
 
-    void retranslateUi(QMainWindow *TelaCadastro)
+    void retranslateUi(QDialog *TelaCadastro)
     {
         TelaCadastro->setWindowTitle(QCoreApplication::translate("TelaCadastro", "MainWindow", nullptr));
         label->setText(QCoreApplication::translate("TelaCadastro", "<h2>Cadastrar</h2>", nullptr));

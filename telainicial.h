@@ -20,11 +20,9 @@ public:
 
 private slots:
     void on_btnLogin_clicked();
-
     void on_btnCadastrar_clicked();
 
 private:
-    Ui::TelaInicial *ui;
-
+    Ui::TelaInicial *ui;\
 };
 #endif // TELAINICIAL_H

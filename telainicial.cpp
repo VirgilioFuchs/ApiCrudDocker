@@ -4,6 +4,13 @@
 #include <QMessageBox>
 #include <QLineEdit>
 
+//Bibliotecas necessárias para o SQLite
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+#include <QDir>
+
 
 TelaInicial::TelaInicial(QWidget *parent)
     : QMainWindow(parent)
@@ -17,32 +24,38 @@ TelaInicial::~TelaInicial()
     delete ui;
 }
 
-
 void TelaInicial::on_btnLogin_clicked()
 {
-    // QString nome = ui->leUsuario->text();
-    // QString senha = ui->leSenha->text();
+    QString nome = ui->leUsuario->text();
+    QString senha = ui->leSenha->text();
 
-    //     // Condição de Login
-    //     if(){
-    //         QMessageBox::information(this, "Login", "Login efetuado com sucesso!");
-    //         ui->leUsuario->clear();
-    //         ui->leSenha->clear();
-    //         close();
-    //     } else {
-    //         QMessageBox::critical(this, "Erro!", "Usuário ou Senha estão incorretos!");
-    //         ui->leUsuario->clear();
-    //         ui->leSenha->clear();
-    //     }
+    QSqlDatabase bd = QSqlDatabase::database();
+
+    if(!bd.isOpen()){
+        qDebug() << "Erro ao conectar ao banco de dados!" << bd.lastError().text();
+        QMessageBox::critical(this, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT nome FROM usuarios WHERE nome = :nome AND senha = :senha");
+    query.bindValue(":nome", nome);
+    query.bindValue(":senha", senha);
+
+    if(query.exec() && query.next()) {
+        QMessageBox::information(this, "Login realizado!", "Bem vindo ao nosso sistema " + nome + "!");
+        close();
+    } else {
+        QMessageBox::critical(this, "Falha ao logar!", "Usuário ou senha inválidos!");
+        ui->leUsuario->clear();
+        ui->leSenha->clear();
+    }
 
 }
 
 
 void TelaInicial::on_btnCadastrar_clicked()
 {
-    //Recebe do enviarDados e armazena no receberDadosCadastro
-    TelaCadastro *telaCadastro = new TelaCadastro(this);
-    // connect(telaCadastro, &TelaCadastro::enviarDados, this, &TelaInicial::receberDadosCadastro);
-    telaCadastro->show();
+    TelaCadastro telaCadastro(this);
+    telaCadastro.exec();
 }
-
