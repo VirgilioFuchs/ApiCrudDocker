@@ -7,12 +7,13 @@
 #include <QDir>
 #include <QMessageBox>
 
+// Inicia o Banco de Dados ao Logar
 bool iniciarBD()
 {
     QSqlDatabase bd = QSqlDatabase::addDatabase("QSQLITE");
     bd.setDatabaseName(QDir::currentPath() + "/login.db");
 
-    if(!bd.isOpen()) {
+    if(!bd.open()) {
         QMessageBox::critical(nullptr, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
         qDebug() << "Erro: " << bd.lastError().text();
         return false;
@@ -22,6 +23,7 @@ bool iniciarBD()
 
     QSqlQuery query;
 
+    // Cria a tabela se não existir
     bool sucesso = query.exec("CREATE TABLE IF NOT EXISTS usuarios ("
                               "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                               "nome TEXT UNIQUE NOT NULL,"
@@ -34,7 +36,6 @@ bool iniciarBD()
         qDebug() << "Erro ao criar a tabela 'usuarios':" << query.lastError().text();
         return false;
     }
-
     return true;
 }
 

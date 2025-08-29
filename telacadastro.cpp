@@ -28,13 +28,15 @@ void TelaCadastro::on_btnCadastrar_clicked()
     QString nomeCadastro = ui->leCadastroUsuario->text();
     QString senhaCadastro = ui->leCadastroSenha->text();
 
+    // Verifica se os campos estão preenchidos
     if(nomeCadastro.isEmpty() || senhaCadastro.isEmpty()){
         QMessageBox::warning(this, "Aviso!", "Coloque todas as informações necessárias em seus respectivos lugares!");
         return;
     }
 
+    // Conexão com o Banco de Dados
     QSqlDatabase bd = QSqlDatabase::database();
-    if(!bd.isOpen()){
+    if(!bd.open()){
         qDebug() << "Erro ao conectar ao banco de dados!" << bd.lastError().text();
         QMessageBox::critical(this, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
         return;
@@ -45,16 +47,18 @@ void TelaCadastro::on_btnCadastrar_clicked()
     query.bindValue(":nome", nomeCadastro);
     query.bindValue(":senha", senhaCadastro);
 
-    if (query.exec()){
-        qDebug() << "Enviando as informações ao banco de dados";
-        QMessageBox::information(this, "Sucesso", "Usuário salvo com sucesso!");
-        accept();
-    } else {
+    // Verificação se o Usuário existe !
+    if (!query.exec()){
         qDebug() << "Erro ao salvar no banco:" << query.lastError().text();
-        QMessageBox::critical(this, "Erro de banco de dados", "Ocorreu um erro ao cadastrar os dados!");
+        QMessageBox::critical(this, "Erro de banco de dados", "Ocorreu um erro ao cadastrar os dados!");    // Aviso do BD caso de erro
+    } else {
+        qDebug() << "Enviando as informações ao banco de dados";
+        QMessageBox::information(this, "Sucesso", "Usuário salvo com sucesso!");    // Avisa que o cadastro funcionou
+        accept();
     }
 }
 
+// Volta para a Tela Inicial
 void TelaCadastro::on_btnVoltar_clicked()
 {
     reject();

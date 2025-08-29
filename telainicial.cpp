@@ -29,9 +29,10 @@ void TelaInicial::on_btnLogin_clicked()
     QString nome = ui->leUsuario->text();
     QString senha = ui->leSenha->text();
 
+    // Conexão com o Banco de Dados
     QSqlDatabase bd = QSqlDatabase::database();
 
-    if(!bd.isOpen()){
+    if(!bd.open()){
         qDebug() << "Erro ao conectar ao banco de dados!" << bd.lastError().text();
         QMessageBox::critical(this, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
         return;
@@ -42,6 +43,7 @@ void TelaInicial::on_btnLogin_clicked()
     query.bindValue(":nome", nome);
     query.bindValue(":senha", senha);
 
+    // Verifica as credenciais de login
     if(query.exec() && query.next()) {
         QMessageBox::information(this, "Login realizado!", "Bem vindo ao nosso sistema " + nome + "!");
         close();
@@ -53,7 +55,7 @@ void TelaInicial::on_btnLogin_clicked()
 
 }
 
-
+// Abre a Tela Cadastro
 void TelaInicial::on_btnCadastrar_clicked()
 {
     TelaCadastro telaCadastro(this);
