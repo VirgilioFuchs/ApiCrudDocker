@@ -1,4 +1,5 @@
 #include "telainicial.h"
+#include "database.h"
 #include <QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -7,44 +8,19 @@
 #include <QDir>
 #include <QMessageBox>
 
-// Inicia o Banco de Dados ao Logar
-bool iniciarBD()
-{
-    QSqlDatabase bd = QSqlDatabase::addDatabase("QSQLITE");
-    bd.setDatabaseName(QDir::currentPath() + "/login.db");
-
-    if(!bd.open()) {
-        QMessageBox::critical(nullptr, "Erro de Banco de Dados", "Não foi possível conectar ao banco de dados!");
-        qDebug() << "Erro: " << bd.lastError().text();
-        return false;
-    }
-
-    qDebug() << "Banco de dados conectado com sucesso!";
-
-    QSqlQuery query;
-
-    // Cria a tabela se não existir
-    bool sucesso = query.exec("CREATE TABLE IF NOT EXISTS usuarios ("
-                              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                              "nome TEXT UNIQUE NOT NULL,"
-                              "senha TEXT NOT NULL"
-                              ")");
-
-    if (sucesso) {
-        qDebug() << "Tabela 'usuarios' criada com sucesso!";
-    } else {
-        qDebug() << "Erro ao criar a tabela 'usuarios':" << query.lastError().text();
-        return false;
-    }
-    return true;
-}
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    if(!iniciarBD()){
-        return -1; //Se falhar, o banco de dados não abre
+    qInfo() << "Iniciando verificação de drivers SQL...";
+    qInfo() << "Drivers disponíveis:" << QSqlDatabase::drivers();
+    qInfo() << "Verificação concluída.";
+
+    // Tenta conectar ao banco de dados ao iniciar a aplicação
+    if (!Database::instance()->conectar()) {
+        QMessageBox::critical(nullptr, "Erro Crítico", "Não foi possível conectar ao banco de dados.\nA aplicação será encerrada.");
+        return -1; // Encerra com código de erro
     }
 
     TelaInicial w;

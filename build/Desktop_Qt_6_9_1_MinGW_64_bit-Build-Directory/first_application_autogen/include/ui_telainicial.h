@@ -27,7 +27,7 @@ class Ui_TelaInicial
 {
 public:
     QWidget *centralwidget;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QLabel *label;
     QSpacerItem *verticalSpacer_2;
@@ -47,14 +47,14 @@ public:
         TelaInicial->resize(471, 600);
         centralwidget = new QWidget(TelaInicial);
         centralwidget->setObjectName("centralwidget");
-        widget = new QWidget(centralwidget);
-        widget->setObjectName("widget");
-        widget->setGeometry(QRect(130, 40, 201, 391));
-        verticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName("layoutWidget");
+        layoutWidget->setGeometry(QRect(130, 40, 201, 391));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setSpacing(8);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(8, 0, 8, 8);
-        label = new QLabel(widget);
+        label = new QLabel(layoutWidget);
         label->setObjectName("label");
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
@@ -64,14 +64,15 @@ public:
 
         verticalLayout->addItem(verticalSpacer_2);
 
-        leUsuario = new QLineEdit(widget);
+        leUsuario = new QLineEdit(layoutWidget);
         leUsuario->setObjectName("leUsuario");
         leUsuario->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout->addWidget(leUsuario);
 
-        leSenha = new QLineEdit(widget);
+        leSenha = new QLineEdit(layoutWidget);
         leSenha->setObjectName("leSenha");
+        leSenha->setEchoMode(QLineEdit::EchoMode::Password);
         leSenha->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout->addWidget(leSenha);
@@ -80,7 +81,7 @@ public:
 
         verticalLayout->addItem(verticalSpacer);
 
-        btnLogin = new QPushButton(widget);
+        btnLogin = new QPushButton(layoutWidget);
         btnLogin->setObjectName("btnLogin");
 
         verticalLayout->addWidget(btnLogin);
@@ -89,7 +90,7 @@ public:
 
         verticalLayout->addItem(verticalSpacer_3);
 
-        btnCadastrar = new QPushButton(widget);
+        btnCadastrar = new QPushButton(layoutWidget);
         btnCadastrar->setObjectName("btnCadastrar");
 
         verticalLayout->addWidget(btnCadastrar);
@@ -97,7 +98,7 @@ public:
         TelaInicial->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TelaInicial);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 471, 25));
+        menubar->setGeometry(QRect(0, 0, 471, 22));
         TelaInicial->setMenuBar(menubar);
         statusbar = new QStatusBar(TelaInicial);
         statusbar->setObjectName("statusbar");

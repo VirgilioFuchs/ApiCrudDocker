@@ -756,7 +756,9 @@ C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.h
  mdp:C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/moc_predefs.h
  mdp:C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.h
 C:/Users/Anglo/Documents/LoginSenhaTesteQT/main.cpp
+C:/Users/Anglo/Documents/LoginSenhaTesteQT/database.cpp
 C:/Users/Anglo/Documents/LoginSenhaTesteQT/telainicial.cpp
  uic:./ui_telainicial.h
 C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.cpp
  uic:ui_telacadastro.h
+C:/Users/Anglo/Documents/LoginSenhaTesteQT/database.h

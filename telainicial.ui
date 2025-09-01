@@ -14,7 +14,7 @@
    <string>TelaInicial</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -74,6 +74,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="leSenha">
+       <property name="echoMode">
+        <enum>QLineEdit::EchoMode::Password</enum>
+       </property>
        <property name="alignment">
         <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
@@ -137,7 +140,7 @@
      <x>0</x>
      <y>0</y>
      <width>471</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
