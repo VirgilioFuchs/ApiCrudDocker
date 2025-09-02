@@ -1,5 +1,4 @@
 #include "telacadastro.h"
-#include "database.h"
 #include "ui_telacadastro.h"
 #include <QMessageBox>
 #include <QLineEdit>
@@ -10,6 +9,7 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDir>
+#include <qcryptographichash.h>
 
 TelaCadastro::TelaCadastro(QWidget *parent)
     : QDialog(parent)
@@ -29,13 +29,38 @@ void TelaCadastro::on_btnCadastrar_clicked()
     QString nomeCadastro = ui->leCadastroUsuario->text();
     QString senhaCadastro = ui->leCadastroSenha->text();
 
-    if (Database::instance()->cadastrarUsuario(nomeCadastro, senhaCadastro)) {
-        QMessageBox::information(this, "Cadastro", "Usuário cadastrado com sucesso!");
-        accept(); // Fecha a janela de diálogo
+    if(nomeCadastro.isEmpty() && senhaCadastro.isEmpty()){
+        QMessageBox::critical(this, "Erro!", "Preencha todos os campos!");
+        return;
+    }
+
+    // Verifica se já existe usuário com esse nome
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT COUNT(*) FROM usuarios WHERE nome = :nome");
+    checkQuery.bindValue(":nome", nomeCadastro);
+    checkQuery.exec();
+    checkQuery.next();
+
+    if (checkQuery.value(0).toInt() > 0) {
+        QMessageBox::critical(this, "Erro!", "Este nome de usuario já está cadastrado!");
+        return;
+    }
+
+    QByteArray senhaHash = QCryptographicHash::hash(senhaCadastro.toUtf8(), QCryptographicHash::Sha256).toHex();
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO usuarios (nome, senha) VALUES (:nome, :senha)");
+    query.bindValue(":nome", nomeCadastro);
+    query.bindValue(":senha", QString(senhaHash));
+
+    if(!query.exec()) {
+        qDebug() << "Erro ao inserir: " << query.lastError().text();
     } else {
-        QMessageBox::critical(this, "Cadastro", "Erro: O usuário já pode existir ou a senha é inválida.");
+        qDebug() << "Cadastro realizado com sucesso!";
+        close();
         ui->leCadastroUsuario->clear();
         ui->leCadastroSenha->clear();
+        QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
     }
 }
 

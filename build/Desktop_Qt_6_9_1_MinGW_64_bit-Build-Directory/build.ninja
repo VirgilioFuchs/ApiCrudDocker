@@ -81,14 +81,6 @@ build CMakeFiles/first_application.dir/telacadastro.cpp.obj: CXX_COMPILER__first
   OBJECT_DIR = CMakeFiles\first_application.dir
   OBJECT_FILE_DIR = CMakeFiles\first_application.dir
 
-build CMakeFiles/first_application.dir/database.cpp.obj: CXX_COMPILER__first_application_unscanned_Debug C$:/Users/Anglo/Documents/LoginSenhaTesteQT/database.cpp || cmake_object_order_depends_target_first_application
-  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
-  DEP_FILE = CMakeFiles\first_application.dir\database.cpp.obj.d
-  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/first_application_autogen/include -isystem C:/Qt/6.9.1/mingw_64/include/QtCore -isystem C:/Qt/6.9.1/mingw_64/include -isystem C:/Qt/6.9.1/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.9.1/mingw_64/include/QtWidgets -isystem C:/Qt/6.9.1/mingw_64/include/QtGui -isystem C:/Qt/6.9.1/mingw_64/include/QtSql
-  OBJECT_DIR = CMakeFiles\first_application.dir
-  OBJECT_FILE_DIR = CMakeFiles\first_application.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target first_application
@@ -97,7 +89,7 @@ build CMakeFiles/first_application.dir/database.cpp.obj: CXX_COMPILER__first_app
 #############################################
 # Link the executable first_application.exe
 
-build first_application.exe: CXX_EXECUTABLE_LINKER__first_application_Debug CMakeFiles/first_application.dir/first_application_autogen/mocs_compilation.cpp.obj CMakeFiles/first_application.dir/main.cpp.obj CMakeFiles/first_application.dir/telainicial.cpp.obj CMakeFiles/first_application.dir/telacadastro.cpp.obj CMakeFiles/first_application.dir/database.cpp.obj | C$:/Qt/6.9.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Sql.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.9.1/mingw_64/lib/libQt6EntryPoint.a || first_application_autogen first_application_autogen_timestamp_deps
+build first_application.exe: CXX_EXECUTABLE_LINKER__first_application_Debug CMakeFiles/first_application.dir/first_application_autogen/mocs_compilation.cpp.obj CMakeFiles/first_application.dir/main.cpp.obj CMakeFiles/first_application.dir/telainicial.cpp.obj CMakeFiles/first_application.dir/telacadastro.cpp.obj | C$:/Qt/6.9.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Sql.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.9.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.9.1/mingw_64/lib/libQt6EntryPoint.a || first_application_autogen first_application_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = C:/Qt/6.9.1/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.9.1/mingw_64/lib/libQt6Sql.a  C:/Qt/6.9.1/mingw_64/lib/libQt6Gui.a  -ld3d11  -ldxgi  -ldxguid  -ld3d12  C:/Qt/6.9.1/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.9.1/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

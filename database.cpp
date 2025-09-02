@@ -16,10 +16,7 @@ Database* Database::instance()
     return m_instance;
 }
 
-Database::Database()
-{
-    // O corpo pode ficar vazio, pois a conexão é feita no método conectar().
-}
+Database::Database(){}
 
 Database::~Database()
 {
@@ -35,12 +32,20 @@ bool Database::conectar()
         return true;
     }
 
+    if (!QSqlDatabase::isDriverAvailable("QMYSQL")) {
+        qWarning() << "Driver QMYSQL não está disponível.";
+        return false;
+    }
+
     m_db = QSqlDatabase::addDatabase("QMYSQL");
-    m_db.setHostName("127.0.0.1");
+    m_db.setHostName("localhost");
     m_db.setPort(3306);
-    m_db.setDatabaseName("LoginBD"); // <-- MUDE AQUI
-    m_db.setUserName("root");           // <-- MUDE AQUI
-    m_db.setPassword("Anglopp.g12");             // <-- MUDE AQUI
+    m_db.setDatabaseName("LoginBD");
+    m_db.setUserName("root");
+    m_db.setPassword("Anglopp.g12");
+
+    // 1) Diagnóstico: desativa TLS para ver se a conexão sobe
+    m_db.setConnectOptions("MYSQL_OPT_RECONNECT=1");
 
     if (!m_db.open()) {
         qWarning() << "Falha ao conectar ao banco de dados:" << m_db.lastError().text();
@@ -50,11 +55,16 @@ bool Database::conectar()
     qInfo() << "Banco de dados conectado com sucesso!";
 
     // Cria a tabela de usuários se ela não existir
-    QSqlQuery query;
-    if (!query.exec("CREATE TABLE IF NOT EXISTS usuarios ("
-                    "id INT AUTO_INCREMENT PRIMARY KEY, "
-                    "nome VARCHAR(50) UNIQUE NOT NULL, "
-                    "senha VARCHAR(64) NOT NULL)")) {
+    QSqlQuery query(m_db);
+
+    const char* ddl =
+        "CREATE TABLE IF NOT EXISTS usuarios ("
+        "  id INT AUTO_INCREMENT PRIMARY KEY,"
+        "  nome VARCHAR(50) UNIQUE NOT NULL,"
+        "  senha CHAR(64) NOT NULL"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+    if (!query.exec(ddl)) {
         qWarning() << "Falha ao criar a tabela 'usuarios':" << query.lastError().text();
         return false;
     }
@@ -79,16 +89,21 @@ bool Database::cadastrarUsuario(const QString &usuario, const QString &senha)
         return false;
     }
 
-    // Criptografa a senha antes de salvar (MUITO IMPORTANTE!)
-    QString senhaHash = QString(QCryptographicHash::hash(senha.toUtf8(), QCryptographicHash::Sha256).toHex());
+    // Criptografia de senha
+    const QString senhaHash =QString::fromLatin1(QCryptographicHash::hash(senha.toUtf8(),QCryptographicHash::Sha256).toHex());
 
-    QSqlQuery query;
+    QSqlQuery query(m_db);
     query.prepare("INSERT INTO usuarios (nome, password_hash) VALUES (:nome, :password_hash)");
     query.bindValue(":nome", usuario);
     query.bindValue(":password_hash", senhaHash);
 
     if (!query.exec()) {
-        qWarning() << "Falha ao registrar usuário:" << query.lastError().text();
+        const auto err = query.lastError();
+        // 1062 = ER_DUP_ENTRY (nome duplicado)
+        if (err.nativeErrorCode() == "1062")
+            qWarning() << "Falha ao registrar: usuário já existe.";
+        else
+            qWarning() << "Falha ao registrar usuário:" << err.text();
         return false;
     }
 
@@ -98,10 +113,10 @@ bool Database::cadastrarUsuario(const QString &usuario, const QString &senha)
 
 bool Database::validarLogin(const QString &usuario, const QString &senha)
 {
-    // Criptografa a senha fornecida para comparar com a que está no banco
-    QString senhaHash = QString(QCryptographicHash::hash(senha.toUtf8(), QCryptographicHash::Sha256).toHex());
 
-    QSqlQuery query;
+    const QString senhaHash = QString::fromLatin1(QCryptographicHash::hash(senha.toUtf8(), QCryptographicHash::Sha256).toHex());
+
+    QSqlQuery query(m_db);
     query.prepare("SELECT senha FROM usuarios WHERE nome = :nome");
     query.bindValue(":nome", usuario);
 
@@ -114,10 +129,10 @@ bool Database::validarLogin(const QString &usuario, const QString &senha)
         QString senhaDoBanco = query.value(0).toString();
         if (senhaDoBanco == senhaHash) {
             qInfo() << "Login de" << usuario << "validado com sucesso!";
-            return true; // Senha correta
+            return true;
         }
     }
 
     qWarning() << "Falha na validação: usuário ou senha incorretos para" << usuario;
-    return false; // Usuário não encontrado ou senha incorreta
+    return false;
 }

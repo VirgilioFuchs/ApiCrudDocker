@@ -24,7 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         telacadastro.h telacadastro.cpp telacadastro.ui
-        database.h database.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET first_application APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

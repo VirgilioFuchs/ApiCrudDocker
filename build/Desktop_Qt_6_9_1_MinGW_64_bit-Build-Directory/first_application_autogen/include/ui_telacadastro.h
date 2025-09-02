@@ -27,7 +27,7 @@ class Ui_TelaCadastro
 {
 public:
     QWidget *centralwidget;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QLabel *label;
     QSpacerItem *verticalSpacer;
@@ -47,14 +47,15 @@ public:
         TelaCadastro->resize(426, 600);
         centralwidget = new QWidget(TelaCadastro);
         centralwidget->setObjectName("centralwidget");
-        widget = new QWidget(centralwidget);
-        widget->setObjectName("widget");
-        widget->setGeometry(QRect(100, 70, 201, 351));
-        verticalLayout = new QVBoxLayout(widget);
+        centralwidget->setGeometry(QRect(0, 0, 401, 491));
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName("layoutWidget");
+        layoutWidget->setGeometry(QRect(100, 70, 201, 351));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setSpacing(8);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(8, 8, 8, 8);
-        label = new QLabel(widget);
+        label = new QLabel(layoutWidget);
         label->setObjectName("label");
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
@@ -64,14 +65,15 @@ public:
 
         verticalLayout->addItem(verticalSpacer);
 
-        leCadastroUsuario = new QLineEdit(widget);
+        leCadastroUsuario = new QLineEdit(layoutWidget);
         leCadastroUsuario->setObjectName("leCadastroUsuario");
         leCadastroUsuario->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout->addWidget(leCadastroUsuario);
 
-        leCadastroSenha = new QLineEdit(widget);
+        leCadastroSenha = new QLineEdit(layoutWidget);
         leCadastroSenha->setObjectName("leCadastroSenha");
+        leCadastroSenha->setEchoMode(QLineEdit::EchoMode::Password);
         leCadastroSenha->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout->addWidget(leCadastroSenha);
@@ -80,7 +82,7 @@ public:
 
         verticalLayout->addItem(verticalSpacer_2);
 
-        btnCadastrar = new QPushButton(widget);
+        btnCadastrar = new QPushButton(layoutWidget);
         btnCadastrar->setObjectName("btnCadastrar");
 
         verticalLayout->addWidget(btnCadastrar);
@@ -89,7 +91,7 @@ public:
 
         verticalLayout->addItem(verticalSpacer_3);
 
-        btnVoltar = new QPushButton(widget);
+        btnVoltar = new QPushButton(layoutWidget);
         btnVoltar->setObjectName("btnVoltar");
 
         verticalLayout->addWidget(btnVoltar);
@@ -99,6 +101,7 @@ public:
         menubar->setGeometry(QRect(0, 0, 426, 25));
         statusbar = new QStatusBar(TelaCadastro);
         statusbar->setObjectName("statusbar");
+        statusbar->setGeometry(QRect(0, 0, 3, 21));
 
         retranslateUi(TelaCadastro);
 

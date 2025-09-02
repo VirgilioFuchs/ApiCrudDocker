@@ -393,12 +393,6 @@
 	"HEADERS" : 
 	[
 		[
-			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/database.h",
-			"MU",
-			"EWIEGA46WW/moc_database.cpp",
-			null
-		],
-		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.h",
 			"MU",
 			"EWIEGA46WW/moc_telacadastro.cpp",
@@ -484,7 +478,6 @@
 	"SETTINGS_FILE" : "C:/Users/Anglo/Documents/LoginSenhaTesteQT/build/Desktop_Qt_6_9_1_MinGW_64_bit-Build-Directory/CMakeFiles/first_application_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "C:/Users/Anglo/Documents/LoginSenhaTesteQT/database.cpp", "MU", null ],
 		[ "C:/Users/Anglo/Documents/LoginSenhaTesteQT/main.cpp", "MU", null ],
 		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.cpp",

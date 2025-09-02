@@ -1,5 +1,4 @@
 #include "telainicial.h"
-#include "database.h"
 #include <QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -13,14 +12,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    qInfo() << "Iniciando verificação de drivers SQL...";
-    qInfo() << "Drivers disponíveis:" << QSqlDatabase::drivers();
-    qInfo() << "Verificação concluída.";
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setDatabaseName("logintestebd");
+    db.setUserName("root");
+    db.setPassword("Anglopp.g12");
 
-    // Tenta conectar ao banco de dados ao iniciar a aplicação
-    if (!Database::instance()->conectar()) {
-        QMessageBox::critical(nullptr, "Erro Crítico", "Não foi possível conectar ao banco de dados.\nA aplicação será encerrada.");
-        return -1; // Encerra com código de erro
+    if (!db.open()) {
+        qDebug() << "Erro ao conectar ao MySQL:" << db.lastError().text();
+        return -1;
+    } else {
+        qDebug() << "Conexão estabelecida com sucesso!";
     }
 
     TelaInicial w;
