@@ -1,5 +1,5 @@
-#include "telainicial.h"
-#include "./ui_telainicial.h"
+#include "telalogin.h"
+#include "./ui_telalogin.h"
 #include "telacadastro.h"
 #include <QMessageBox>
 #include <QLineEdit>

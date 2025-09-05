@@ -14,9 +14,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(PROJECT_SOURCES
         main.cpp
-        telainicial.cpp
-        telainicial.h
-        telainicial.ui
+        telalogin.cpp
+        telalogin.h
+        telalogin.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -24,6 +24,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         telacadastro.h telacadastro.cpp telacadastro.ui
+        telamenu.h telamenu.cpp telamenu.ui
+        telaadicionar.h telaadicionar.cpp telaadicionar.ui
+        telaalterar.h telaalterar.cpp telaalterar.ui
 
     )
 # Define target properties for Android with Qt 6 as:

@@ -1,5 +1,5 @@
-#ifndef TELAINICIAL_H
-#define TELAINICIAL_H
+#ifndef TELALOGIN_H
+#define TELALOGIN_H
 
 #include <QLineEdit>
 #include <QMainWindow>
@@ -25,4 +25,4 @@ private slots:
 private:
     Ui::TelaInicial *ui;\
 };
-#endif // TELAINICIAL_H
+#endif // TELALOGIN_H

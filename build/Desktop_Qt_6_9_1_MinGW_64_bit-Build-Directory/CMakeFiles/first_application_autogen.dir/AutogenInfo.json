@@ -393,15 +393,33 @@
 	"HEADERS" : 
 	[
 		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaadicionar.h",
+			"MU",
+			"EWIEGA46WW/moc_telaadicionar.cpp",
+			null
+		],
+		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaalterar.h",
+			"MU",
+			"EWIEGA46WW/moc_telaalterar.cpp",
+			null
+		],
+		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.h",
 			"MU",
 			"EWIEGA46WW/moc_telacadastro.cpp",
 			null
 		],
 		[
-			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telainicial.h",
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telalogin.h",
 			"MU",
-			"EWIEGA46WW/moc_telainicial.cpp",
+			"EWIEGA46WW/moc_telalogin.cpp",
+			null
+		],
+		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telamenu.h",
+			"MU",
+			"EWIEGA46WW/moc_telamenu.cpp",
 			null
 		]
 	],
@@ -480,15 +498,26 @@
 	[
 		[ "C:/Users/Anglo/Documents/LoginSenhaTesteQT/main.cpp", "MU", null ],
 		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaadicionar.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaalterar.cpp",
+			"MU",
+			null
+		],
+		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.cpp",
 			"MU",
 			null
 		],
 		[
-			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telainicial.cpp",
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telalogin.cpp",
 			"MU",
 			null
-		]
+		],
+		[ "C:/Users/Anglo/Documents/LoginSenhaTesteQT/telamenu.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

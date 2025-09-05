@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QLineEdit>
 
-//Bibliotecas necessárias para o SQLite
+//Bibliotecas necessárias para o MySQL
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
