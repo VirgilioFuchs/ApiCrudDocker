@@ -25,8 +25,7 @@ TelaAdicionar::TelaAdicionar(QWidget *parent)
     grupoSexoAluno->addButton(ui->rbFeminino, 2);
 
     // Atualiza o valor caso o radio button seja alterado
-
-    connect(grupoSexoAluno, SIGNAL(buttonClicked(int)),
+    connect(grupoSexoAluno, SIGNAL(idClicked(int)),
             this, SLOT(respostaSelecionadaSexo(int)));
 }
 
@@ -45,6 +44,7 @@ void TelaAdicionar::on_btnCadastrar_clicked()
 {
     QString nomeAluno = ui->leNomeAluno->text();
     QDate dataNascimento = ui->dateNascimento->date();
+    QString dataFormatada = dataNascimento.toString("yyyy-MM--dd");
     QString rgAluno = ui->leRG->text();
     QString cpfAluno = ui->leCPF->text();
     QString nomeResponsavel = ui->leNomeResponsavel->text();
@@ -59,15 +59,17 @@ void TelaAdicionar::on_btnCadastrar_clicked()
     QAbstractButton *selecionado = grupoSexoAluno->checkedButton();
 
     QSqlQuery checkQuery;
-    checkQuery.prepare("SELECT COUNT(*) FROM alunos WHERE rgAluno =: rgAluno AND cpfAluno = :cpfAluno");
+    checkQuery.prepare("SELECT COUNT(*) FROM alunos WHERE rgAluno = :rgAluno AND cpfAluno = :cpfAluno");
     checkQuery.bindValue(":rgAluno", rgAluno);
     checkQuery.bindValue(":cpfAluno", cpfAluno);
     checkQuery.exec();
     checkQuery.next();
 
-    if (checkQuery.value(0).toInt() > 0){
-        QMessageBox::critical(this, "Erro!", "CPF e RG inválido");
-        return;
+    if (checkQuery.next()){
+        if (checkQuery.value(0).toInt() > 0){
+            QMessageBox::critical(this, "Erro!", "CPF e RG inválido");
+            return;
+        }
     }
 
     // Armazena a resposta do radioButtton
@@ -86,27 +88,37 @@ void TelaAdicionar::on_btnCadastrar_clicked()
         break;
     }
 
-    QSqlQuery query1;
-    query1.prepare("INSERT INTO alunos(nomeAluno, dataNascimento, sexoAluno, rgAluno, cpfAluno) "
-                  "VALUES (:nomeAluno, :dataNascimento, :sexoAluno, :rgAluno, :cpfAluno)");
-    query1.bindValue(":nomeAluno", nomeAluno);
-    query1.bindValue(":dataNascimento,", dataNascimento);
-    query1.bindValue(":sexoAluno", sexoAluno);
-    query1.bindValue(":rgAluno", rgAluno);
-    query1.bindValue(":cpfAluno", cpfAluno);
-
     QSqlQuery query2;
     query2.prepare("INSERT INTO responsavel (nomeResponsavel, telefoneResponsavel)"
                    "VALUES (:nomeResponsavel, :telefoneResponsavel)");
     query2.bindValue(":nomeResponsavel", nomeResponsavel);
-    query2.bindValue(":telefoneResponsavel", nomeResponsavel);
+    query2.bindValue(":telefoneResponsavel", telefoneResponsavel);
 
-    if(!query1.exec() || !query2.exec()){
+    if(!query2.exec()){
+        QMessageBox::critical(this, "Erro!", "Erro ao cadastrar o responsável no sistema!");
+        qDebug() << "Erro ao inserir o responsável" << query2.lastError().text();
+        return;
+    }
+
+    int idResponsavel = query2.lastInsertId().toInt();
+
+    QSqlQuery query1;
+    query1.prepare("INSERT INTO alunos(nomeAluno, dataNascimento, sexoAluno, rgAluno, cpfAluno, id_Responsavel) "
+                  "VALUES (:nomeAluno, :dataNascimento, :sexoAluno, :rgAluno, :cpfAluno, :id_Responsavel)");
+    query1.bindValue(":nomeAluno", nomeAluno);
+    query1.bindValue(":dataNascimento", dataNascimento);
+    query1.bindValue(":sexoAluno", sexoAluno);
+    query1.bindValue(":rgAluno", rgAluno);
+    query1.bindValue(":cpfAluno", cpfAluno);
+    query1.bindValue(":id_Responsavel", idResponsavel);
+
+    if(!query1.exec()){
+        QMessageBox::critical(this, "Erro!", "Erro ao cadastrar o aluno no sistema!");
         qDebug() << "Erro ao inserir dados da tabela" << query1.lastError().text();
         return;
     }
 
-    QMessageBox::information(this, "Sucesso!", "Dadosdo aluno cadastrado com sucesso!");
+    QMessageBox::information(this, "Sucesso!", "Dados do aluno cadastrado com sucesso!");
     close();
 
 }
@@ -117,3 +129,9 @@ void TelaAdicionar::respostaSelecionadaSexo(int id)
     QAbstractButton *button = grupoSexoAluno->button(id);
     qDebug() << "Foi selecionado o botão:" << button->text();
 }
+
+void TelaAdicionar::on_btnFechar_clicked()
+{
+    close();
+}
+

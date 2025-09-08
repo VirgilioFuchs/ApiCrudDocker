@@ -1,6 +1,7 @@
 #include "telalogin.h"
 #include "./ui_telalogin.h"
 #include "telacadastro.h"
+#include "telamenu.h"
 #include <QMessageBox>
 #include <QLineEdit>
 
@@ -39,7 +40,8 @@ void TelaInicial::on_btnLogin_clicked()
 
     if(query.exec() && query.next()) {
         QMessageBox::information(this, "Sucesso", "Bem vindo ao nosso sistema!");
-        close();
+        TelaMenu *telaMenu = new TelaMenu(this);
+        telaMenu->show();
     } else {
         QMessageBox::critical(this, "Erro", "Nome ou senha inválidos ou inexistesnte!");
         ui->leUsuario->clear();

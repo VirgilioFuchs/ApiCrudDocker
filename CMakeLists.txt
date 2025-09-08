@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         telamenu.h telamenu.cpp telamenu.ui
         telaadicionar.h telaadicionar.cpp telaadicionar.ui
         telaalterar.h telaalterar.cpp telaalterar.ui
+        telaeditar.h telaeditar.cpp telaeditar.ui
 
     )
 # Define target properties for Android with Qt 6 as:

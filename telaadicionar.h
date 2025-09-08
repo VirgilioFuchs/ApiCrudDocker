@@ -23,6 +23,8 @@ private slots:
 
     void respostaSelecionadaSexo(int id);
 
+    void on_btnFechar_clicked();
+
 private:
     Ui::TelaAdicionar *ui;
 

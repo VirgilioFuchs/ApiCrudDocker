@@ -411,6 +411,12 @@
 			null
 		],
 		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaeditar.h",
+			"MU",
+			"EWIEGA46WW/moc_telaeditar.cpp",
+			null
+		],
+		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telalogin.h",
 			"MU",
 			"EWIEGA46WW/moc_telalogin.cpp",
@@ -509,6 +515,11 @@
 		],
 		[
 			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telacadastro.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/Anglo/Documents/LoginSenhaTesteQT/telaeditar.cpp",
 			"MU",
 			null
 		],

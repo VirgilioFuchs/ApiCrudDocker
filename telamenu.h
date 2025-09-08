@@ -2,6 +2,7 @@
 #define TELAMENU_H
 
 #include <QMainWindow>
+#include <QSqlTableModel>
 
 namespace Ui {
 class TelaMenu;
@@ -23,6 +24,8 @@ private slots:
     void on_btnEditar_clicked();
 
     void on_btnExcluir_clicked();
+
+    void on_btnAtualizar_clicked();
 
 private:
     Ui::TelaMenu *ui;

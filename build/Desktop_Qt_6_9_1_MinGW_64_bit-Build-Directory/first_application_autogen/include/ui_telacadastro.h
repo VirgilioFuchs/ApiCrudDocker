@@ -110,7 +110,7 @@ public:
 
     void retranslateUi(QDialog *TelaCadastro)
     {
-        TelaCadastro->setWindowTitle(QCoreApplication::translate("TelaCadastro", "MainWindow", nullptr));
+        TelaCadastro->setWindowTitle(QCoreApplication::translate("TelaCadastro", "Tela Cadastro", nullptr));
         label->setText(QCoreApplication::translate("TelaCadastro", "<h2>Cadastrar</h2>", nullptr));
         leCadastroUsuario->setPlaceholderText(QCoreApplication::translate("TelaCadastro", "Nome de usu\303\241rio", nullptr));
         leCadastroSenha->setPlaceholderText(QCoreApplication::translate("TelaCadastro", "Senha de usu\303\241rio", nullptr));
