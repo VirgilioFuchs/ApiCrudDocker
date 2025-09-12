@@ -26,7 +26,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         telacadastro.h telacadastro.cpp telacadastro.ui
         telamenu.h telamenu.cpp telamenu.ui
         telaadicionar.h telaadicionar.cpp telaadicionar.ui
-        telaalterar.h telaalterar.cpp telaalterar.ui
         telaeditar.h telaeditar.cpp telaeditar.ui
 
     )

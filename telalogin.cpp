@@ -40,8 +40,12 @@ void TelaInicial::on_btnLogin_clicked()
 
     if(query.exec() && query.next()) {
         QMessageBox::information(this, "Sucesso", "Bem vindo ao nosso sistema!");
-        TelaMenu *telaMenu = new TelaMenu(this);
+        TelaMenu *telaMenu = new TelaMenu(nullptr);
+        telaMenu->setTelaLogin(this);
         telaMenu->show();
+        this->hide();
+        ui->leUsuario->clear();
+        ui->leSenha->clear();
     } else {
         QMessageBox::critical(this, "Erro", "Nome ou senha inválidos ou inexistesnte!");
         ui->leUsuario->clear();

@@ -1,4 +1,5 @@
 #include "telaadicionar.h"
+#include "telamenu.h"
 #include "ui_telaadicionar.h"
 #include <QMessageBox>
 #include <QLineEdit>
@@ -11,6 +12,7 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDir>
+#include <QSqlQueryModel>
 
 TelaAdicionar::TelaAdicionar(QWidget *parent)
     : QWidget(parent)
@@ -44,7 +46,6 @@ void TelaAdicionar::on_btnCadastrar_clicked()
 {
     QString nomeAluno = ui->leNomeAluno->text();
     QDate dataNascimento = ui->dateNascimento->date();
-    QString dataFormatada = dataNascimento.toString("yyyy-MM--dd");
     QString rgAluno = ui->leRG->text();
     QString cpfAluno = ui->leCPF->text();
     QString nomeResponsavel = ui->leNomeResponsavel->text();
@@ -55,8 +56,6 @@ void TelaAdicionar::on_btnCadastrar_clicked()
         QMessageBox::critical(this, "Erro!", "Preencha todos os campos!");
         return;
     }
-
-    QAbstractButton *selecionado = grupoSexoAluno->checkedButton();
 
     QSqlQuery checkQuery;
     checkQuery.prepare("SELECT COUNT(*) FROM alunos WHERE rgAluno = :rgAluno AND cpfAluno = :cpfAluno");
@@ -116,11 +115,10 @@ void TelaAdicionar::on_btnCadastrar_clicked()
         QMessageBox::critical(this, "Erro!", "Erro ao cadastrar o aluno no sistema!");
         qDebug() << "Erro ao inserir dados da tabela" << query1.lastError().text();
         return;
+    } else {
+        QMessageBox::information(this, "Sucesso!", "Dados do aluno cadastrado com sucesso!");
+        emit dadosInseridos();
     }
-
-    QMessageBox::information(this, "Sucesso!", "Dados do aluno cadastrado com sucesso!");
-    close();
-
 }
 
 void TelaAdicionar::respostaSelecionadaSexo(int id)

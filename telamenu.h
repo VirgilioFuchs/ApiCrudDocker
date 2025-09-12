@@ -16,6 +16,11 @@ public:
     explicit TelaMenu(QWidget *parent = nullptr);
     ~TelaMenu();
 
+    void setTelaLogin(QWidget *login);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 private slots:
     void on_btnPesquisar_clicked();
 
@@ -27,8 +32,12 @@ private slots:
 
     void on_btnAtualizar_clicked();
 
+    void fazerLogout();
+
 private:
     Ui::TelaMenu *ui;
+    void atualizarTabela();
+    QWidget *telaLogin;
 };
 
 #endif // TELAMENU_H

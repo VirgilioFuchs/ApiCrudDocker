@@ -67,11 +67,17 @@
    <widget class="QLabel" name="lApresentar">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>500</y>
-      <width>261</width>
-      <height>16</height>
+      <x>80</x>
+      <y>480</y>
+      <width>521</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <italic>true</italic>
+     </font>
     </property>
     <property name="text">
      <string>&lt;h3&gt;...&lt;/h3&gt;</string>
@@ -133,18 +139,21 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuSair">
+   <widget class="QMenu" name="menuSistema">
     <property name="title">
-     <string>Log out</string>
+     <string>Sistema</string>
     </property>
-    <addaction name="separator"/>
-    <addaction name="actionSair"/>
-    <addaction name="separator"/>
+    <addaction name="actionLogout"/>
    </widget>
-   <addaction name="menuSair"/>
+   <addaction name="menuSistema"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSair">
+   <property name="text">
+    <string>Sair</string>
+   </property>
+  </action>
+  <action name="actionLogout">
    <property name="text">
     <string>Sair</string>
    </property>

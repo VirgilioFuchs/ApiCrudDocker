@@ -13,6 +13,9 @@ class TelaEditar : public QWidget
 {
     Q_OBJECT
 
+signals:
+    void dadosInseridos();
+
 public:
     explicit TelaEditar(QWidget *parent = nullptr);
     ~TelaEditar();
@@ -21,8 +24,8 @@ void dadosAlunos(int rmAluno,
                  const QString &nomeAluno,
                  const QDate &dataNascimentoAluno,
                  const QString &sexoAluno,
-                 const QString &rgAluno,
                  const QString &cpfAluno,
+                 const QString &rgAluno,
                  const QString &nomeResponsavel,
                  const QString &telefoneResponsavel
                     );
@@ -30,10 +33,12 @@ void dadosAlunos(int rmAluno,
 private slots:
     void on_btnAlterarDados_clicked();
 
+    void on_btnVoltar_clicked();
+
 private:
     Ui::TelaEditar *ui;
     QButtonGroup *grupoSexo;
-    int rmAluno;
+    int idAluno;
 };
 
 #endif // TELAEDITAR_H

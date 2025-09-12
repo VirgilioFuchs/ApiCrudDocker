@@ -65,7 +65,7 @@
     <string>Voltar para o menu</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>60</x>
@@ -89,6 +89,14 @@
         <width>100</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit{
+	color: red;
+}</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -159,11 +167,16 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit{
+	color: red;
+}</string>
+      </property>
       <property name="inputMask">
        <string>99.999.999-9</string>
       </property>
       <property name="readOnly">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -182,8 +195,16 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit{
+	color: red;
+}</string>
+      </property>
       <property name="inputMask">
        <string>999.999.999-99</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

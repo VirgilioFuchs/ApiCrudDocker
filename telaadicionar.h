@@ -12,6 +12,9 @@ class TelaAdicionar : public QWidget
 {
     Q_OBJECT
 
+signals:
+    void dadosInseridos();
+
 public:
     explicit TelaAdicionar(QWidget *parent = nullptr);
     ~TelaAdicionar();
