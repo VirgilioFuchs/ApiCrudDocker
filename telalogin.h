@@ -3,6 +3,8 @@
 
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,11 +20,17 @@ public:
     TelaInicial(QWidget *parent = nullptr);
     ~TelaInicial();
 
+    QString getJwtToken() const;
+
 private slots:
     void on_btnLogin_clicked();
     void on_btnCadastrar_clicked();
+    void onLoginFinalizado();
 
 private:
-    Ui::TelaInicial *ui;\
+    Ui::TelaInicial *ui;
+    QNetworkAccessManager *conexao;
+    QNetworkReply *resposta;
+    QString jwtToken;
 };
 #endif // TELALOGIN_H

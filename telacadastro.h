@@ -2,6 +2,11 @@
 #define TELACADASTRO_H
 
 #include <QDialog>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace Ui {
 class TelaCadastro;
@@ -18,9 +23,12 @@ public:
 private slots:
     void on_btnCadastrar_clicked();
     void on_btnVoltar_clicked();
+    void onCadastroReply(QNetworkReply *resposta);
 
 private:
     Ui::TelaCadastro *ui;
+    QNetworkAccessManager *conexao;
+    QNetworkReply *resposta;
 };
 
 #endif // TELACADASTRO_H
