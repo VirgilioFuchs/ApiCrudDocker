@@ -34,7 +34,7 @@ void TelaCadastro::on_btnCadastrar_clicked()
         return;
     }
 
-    QUrl url("url_aqui");
+    QUrl url("http://127.0.0.1:8080/register");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -71,6 +71,7 @@ void TelaCadastro::onCadastroReply(QNetworkReply *resposta)
         QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
         ui->leCadastroUsuario->clear();
         ui->leCadastroSenha->clear();
+        accept();
     } else {
         QMessageBox::critical(this, "ERRO!", "Resposta Inesperada: " + resp);
     }
