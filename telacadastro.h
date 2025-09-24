@@ -28,7 +28,6 @@ private slots:
 private:
     Ui::TelaCadastro *ui;
     QNetworkAccessManager *conexao;
-    QNetworkReply *resposta;
 };
 
 #endif // TELACADASTRO_H

@@ -15,6 +15,7 @@ TelaCadastro::TelaCadastro(QWidget *parent)
     , ui(new Ui::TelaCadastro)
 {
     ui->setupUi(this);
+    conexao = new QNetworkAccessManager(this);
 }
 
 TelaCadastro::~TelaCadastro()
@@ -33,6 +34,20 @@ void TelaCadastro::on_btnCadastrar_clicked()
         return;
     }
 
+    QUrl url("url_aqui");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json;
+    json["nome"] = nomeCadastro;
+    json["senha"] = senhaCadastro;
+
+    QJsonDocument docJson(json);
+    QByteArray data = docJson.toJson();
+
+    conexao->post(request,data);
+
+    connect(conexao, &QNetworkAccessManager::finished, this, &TelaCadastro::onCadastroReply);
 }
 
 // Volta para a Tela Inicial
@@ -43,5 +58,22 @@ void TelaCadastro::on_btnVoltar_clicked()
 
 void TelaCadastro::onCadastroReply(QNetworkReply *resposta)
 {
+    if(resposta->error()) {
+        QMessageBox::critical(this, "Erro", "Erro ao Cadastrar!" + resposta->errorString());
+        resposta->deleteLater();
+        return;
+    }
 
+    QByteArray respostaData = resposta->readAll();
+    QString resp = QString::fromUtf8(respostaData);
+
+    if (resp.contains("Usuário Cadastrado", Qt::CaseInsensitive)) {
+        QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
+        ui->leCadastroUsuario->clear();
+        ui->leCadastroSenha->clear();
+    } else {
+        QMessageBox::critical(this, "ERRO!", "Resposta Inesperada: " + resp);
+    }
+
+    resposta->deleteLater();
 }
