@@ -22,3 +22,11 @@ data class AlunosResponse(
     val cpfAluno: String,
     val id_Responsavel: ResponsavelResponse
 )
+
+@Serializable
+data class AlunosUpdateRequest(
+    val nomeAluno: String,
+    val dataNascimento: String,
+    val sexoAluno: String,
+    val id_Responsavel: Int
+)

@@ -1,5 +1,6 @@
 package com.anglo
 
+import com.anglo.routes.alunoResponsavelRoutes
 import com.anglo.routes.userRoutes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -11,5 +12,6 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         userRoutes()
+        alunoResponsavelRoutes()
     }
 }
