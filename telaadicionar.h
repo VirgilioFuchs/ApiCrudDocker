@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QButtonGroup>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 namespace Ui {
 class TelaAdicionar;
@@ -26,6 +29,8 @@ private slots:
 
     void respostaSelecionadaSexo(int id);
 
+    void onCadastroReply(QNetworkReply *resposta);
+
     void on_btnFechar_clicked();
 
 private:
@@ -33,6 +38,7 @@ private:
 
     QButtonGroup *grupoSexoAluno;
     int respostaSexo;
+    QNetworkAccessManager *conexao;
 };
 
 #endif // TELAADICIONAR_H

@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QDate>
 #include <QButtonGroup>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 namespace Ui {
 class TelaEditar;
@@ -35,10 +37,13 @@ private slots:
 
     void on_btnVoltar_clicked();
 
+    void onUpdateReply(QNetworkReply *resposta);
+
 private:
     Ui::TelaEditar *ui;
     QButtonGroup *grupoSexo;
     int idAluno;
+    QNetworkAccessManager *conexao;
 };
 
 #endif // TELAEDITAR_H

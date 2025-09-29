@@ -67,7 +67,7 @@ void TelaCadastro::onCadastroReply(QNetworkReply *resposta)
     QByteArray respostaData = resposta->readAll();
     QString resp = QString::fromUtf8(respostaData);
 
-    if (resp.contains("Usuário Cadastrado", Qt::CaseInsensitive)) {
+    if (resp.contains("Usuário Cadastrado com sucesso!", Qt::CaseInsensitive)) {
         QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
         ui->leCadastroUsuario->clear();
         ui->leCadastroSenha->clear();

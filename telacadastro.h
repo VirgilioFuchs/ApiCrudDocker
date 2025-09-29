@@ -5,8 +5,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 namespace Ui {
 class TelaCadastro;

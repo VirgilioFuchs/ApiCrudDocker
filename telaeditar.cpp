@@ -1,9 +1,9 @@
 #include "telaeditar.h"
 #include "ui_telaeditar.h"
 #include <qmessagebox.h>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkRequest>
 
 TelaEditar::TelaEditar(QWidget *parent)
     : QWidget(parent)
@@ -11,6 +11,7 @@ TelaEditar::TelaEditar(QWidget *parent)
     , idAluno(-1)
 {
     ui->setupUi(this);
+    conexao = new QNetworkAccessManager(this);
 }
 
 void TelaEditar::dadosAlunos(int rmAluno,
@@ -47,7 +48,7 @@ TelaEditar::~TelaEditar()
 void TelaEditar::on_btnAlterarDados_clicked()
 {
     QString nomeAluno = ui->leNomeAluno->text();
-    QDate dataNascimentoAluno = ui->deDataNascimento->date();
+    QString dataNascimentoAluno = ui->deDataNascimento->date().toString("yyyy-MM-dd");
     QString nomeResponsavel = ui->leNomeResponsavel->text();
     QString telefoneResponsavel = ui->leTelefoneResponsavel->text();
 
@@ -56,40 +57,47 @@ void TelaEditar::on_btnAlterarDados_clicked()
     else if(ui->rbFeminino->isChecked()) sexoAluno = "F";
     else QMessageBox::critical(this, "Erro!", "Erro ao identificar o sexo do aluno!");
 
-    QSqlQuery query1;
-    query1.prepare("UPDATE alunos SET "
-                   "nomeAluno = :nomeAluno, "
-                   "dataNascimento = :dataNascimentoAluno, "
-                   "sexoAluno = :sexoAluno "
-                   "WHERE id = :rmAluno");
+    QString urlString = QString("http://127.0.0.1:8080/alunos/%1").arg(idAluno);
+    QNetworkRequest request((QUrl(urlString)));
 
-    query1.bindValue(":nomeAluno", nomeAluno);
-    query1.bindValue(":dataNascimentoAluno", dataNascimentoAluno);
-    query1.bindValue(":sexoAluno", sexoAluno);
-    query1.bindValue(":rmAluno", idAluno);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    if (!query1.exec()) {
-        QMessageBox::critical(this, "Erro Sql!", "Erro ao atualizar os dados do aluno!" + query1.lastError().text());
+    QJsonObject json;
+    json["nomeAluno"] = nomeAluno;
+    json["dataNascimento"] = dataNascimentoAluno;
+    json["sexoAluno"] = sexoAluno;
+    json["nomeResponsavel"] = nomeResponsavel;
+    json["telefoneResponsavel"] = telefoneResponsavel;
+
+    QJsonDocument docJson(json);
+    QByteArray data = docJson.toJson();
+
+    connect(conexao, &QNetworkAccessManager::finished, this, &TelaEditar::onUpdateReply);
+    conexao->put(request, data);
+}
+
+void TelaEditar::onUpdateReply(QNetworkReply *resposta)
+{
+    // Garante que o sinal não seja processado novamente
+    disconnect(conexao, &QNetworkAccessManager::finished, this, &TelaEditar::onUpdateReply);
+
+    if (resposta->error()) {
+        QMessageBox::critical(this, "Erro de Rede", "Erro ao atualizar! " + resposta->errorString());
+        resposta->deleteLater();
         return;
     }
 
-    QSqlQuery query2;
-    query2.prepare("UPDATE responsavel SET "
-                   "nomeResponsavel = :nomeResponsavel, "
-                   "telefoneResponsavel = :telefoneResponsavel "
-                   "WHERE id = (SELECT id_Responsavel FROM alunos WHERE id = :rmAluno)");
-    query2.bindValue(":nomeResponsavel", nomeResponsavel);
-    query2.bindValue(":telefoneResponsavel", telefoneResponsavel);
-    query2.bindValue(":rmAluno", idAluno);
+    QByteArray respostaData = resposta->readAll();
+    QString resp = QString::fromUtf8(respostaData);
 
-    if (!query2.exec()) {
-        QMessageBox::critical(this, "Erro Sql!", "Erro ao atualizar os dados do responsável! " + query2.lastError().text());
-        return;
+    if (resp.contains("Aluno e Responsavel atualizados com sucesso!", Qt::CaseInsensitive)) {
+        QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
+        emit dadosInseridos();
+        this->close();
+    } else {
+        QMessageBox::critical(this, "ERRO!", "Resposta Inesperada: " + resp);
     }
-
-    emit dadosInseridos();
-    QMessageBox::information(this, "Sucesso!", "Dados atualizados com sucesso!");
-    this->close();
+    resposta->deleteLater();
 }
 
 

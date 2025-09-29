@@ -1,18 +1,17 @@
 #include "telaadicionar.h"
 #include "telamenu.h"
 #include "ui_telaadicionar.h"
+#include <QDate>
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QButtonGroup>
-
-//Blibliotecas para MySQL
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QDebug>
 #include <QDir>
-#include <QSqlQueryModel>
 
 TelaAdicionar::TelaAdicionar(QWidget *parent)
     : QWidget(parent)
@@ -25,6 +24,8 @@ TelaAdicionar::TelaAdicionar(QWidget *parent)
     grupoSexoAluno = new QButtonGroup(this);
     grupoSexoAluno->addButton(ui->rbMasculino, 1);
     grupoSexoAluno->addButton(ui->rbFeminino, 2);
+
+    conexao = new QNetworkAccessManager(this);
 
     // Atualiza o valor caso o radio button seja alterado
     connect(grupoSexoAluno, SIGNAL(idClicked(int)),
@@ -46,6 +47,7 @@ void TelaAdicionar::on_btnCadastrar_clicked()
 {
     QString nomeAluno = ui->leNomeAluno->text();
     QDate dataNascimento = ui->dateNascimento->date();
+    QString dataFormatada = dataNascimento.toString("yyyy-MM-dd");
     QString rgAluno = ui->leRG->text();
     QString cpfAluno = ui->leCPF->text();
     QString nomeResponsavel = ui->leNomeResponsavel->text();
@@ -55,20 +57,6 @@ void TelaAdicionar::on_btnCadastrar_clicked()
         || cpfAluno.isEmpty() || nomeResponsavel.isEmpty() || telefoneResponsavel.isEmpty()){
         QMessageBox::critical(this, "Erro!", "Preencha todos os campos!");
         return;
-    }
-
-    QSqlQuery checkQuery;
-    checkQuery.prepare("SELECT COUNT(*) FROM alunos WHERE rgAluno = :rgAluno AND cpfAluno = :cpfAluno");
-    checkQuery.bindValue(":rgAluno", rgAluno);
-    checkQuery.bindValue(":cpfAluno", cpfAluno);
-    checkQuery.exec();
-    checkQuery.next();
-
-    if (checkQuery.next()){
-        if (checkQuery.value(0).toInt() > 0){
-            QMessageBox::critical(this, "Erro!", "CPF e RG inválido");
-            return;
-        }
     }
 
     // Armazena a resposta do radioButtton
@@ -87,38 +75,25 @@ void TelaAdicionar::on_btnCadastrar_clicked()
         break;
     }
 
-    QSqlQuery query2;
-    query2.prepare("INSERT INTO responsavel (nomeResponsavel, telefoneResponsavel)"
-                   "VALUES (:nomeResponsavel, :telefoneResponsavel)");
-    query2.bindValue(":nomeResponsavel", nomeResponsavel);
-    query2.bindValue(":telefoneResponsavel", telefoneResponsavel);
+    QUrl url("http://127.0.0.1:8080/registerAlunoAndResponsavel");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    if(!query2.exec()){
-        QMessageBox::critical(this, "Erro!", "Erro ao cadastrar o responsável no sistema!");
-        qDebug() << "Erro ao inserir o responsável" << query2.lastError().text();
-        return;
-    }
+    QJsonObject json;
+    json["nomeAluno"] = nomeAluno;
+    json["dataNascimento"] = dataFormatada;
+    json["sexoAluno"] = sexoAluno;
+    json["rgAluno"] = rgAluno;
+    json["cpfAluno"] = cpfAluno;
+    json["nomeResponsavel"] = nomeResponsavel;
+    json["telefoneResponsavel"] = telefoneResponsavel;
 
-    int idResponsavel = query2.lastInsertId().toInt();
+    QJsonDocument docJson(json);
+    QByteArray data = docJson.toJson();
 
-    QSqlQuery query1;
-    query1.prepare("INSERT INTO alunos(nomeAluno, dataNascimento, sexoAluno, rgAluno, cpfAluno, id_Responsavel) "
-                  "VALUES (:nomeAluno, :dataNascimento, :sexoAluno, :rgAluno, :cpfAluno, :id_Responsavel)");
-    query1.bindValue(":nomeAluno", nomeAluno);
-    query1.bindValue(":dataNascimento", dataNascimento);
-    query1.bindValue(":sexoAluno", sexoAluno);
-    query1.bindValue(":rgAluno", rgAluno);
-    query1.bindValue(":cpfAluno", cpfAluno);
-    query1.bindValue(":id_Responsavel", idResponsavel);
+    conexao->post(request,data);
 
-    if(!query1.exec()){
-        QMessageBox::critical(this, "Erro!", "Erro ao cadastrar o aluno no sistema!");
-        qDebug() << "Erro ao inserir dados da tabela" << query1.lastError().text();
-        return;
-    } else {
-        QMessageBox::information(this, "Sucesso!", "Dados do aluno cadastrado com sucesso!");
-        emit dadosInseridos();
-    }
+    connect(conexao, &QNetworkAccessManager::finished, this, &TelaAdicionar::onCadastroReply);
 }
 
 void TelaAdicionar::respostaSelecionadaSexo(int id)
@@ -126,6 +101,34 @@ void TelaAdicionar::respostaSelecionadaSexo(int id)
     respostaSexo = id;
     QAbstractButton *button = grupoSexoAluno->button(id);
     qDebug() << "Foi selecionado o botão:" << button->text();
+}
+
+void TelaAdicionar::onCadastroReply(QNetworkReply *resposta)
+{
+    if(resposta->error()) {
+        QMessageBox::critical(this, "Erro", "Erro ao Cadastrar!" + resposta->errorString());
+        resposta->deleteLater();
+        return;
+    }
+
+    QByteArray respostaData = resposta->readAll();
+    QString resp = QString::fromUtf8(respostaData);
+
+    if (resp.contains("Aluno e Responsável cadastrados com sucesso!", Qt::CaseInsensitive)) {
+        QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
+        ui->leNomeAluno->clear();
+        ui->dateNascimento->clear();
+        ui->leRG->clear();
+        ui->leCPF->clear();
+        ui->leNomeResponsavel->clear();
+        ui->leContato->clear();
+
+        emit dadosInseridos();
+        this->close();
+    } else {
+        QMessageBox::critical(this, "ERRO!", "Resposta Inesperada: " + resp);
+    }
+    resposta->deleteLater();
 }
 
 void TelaAdicionar::on_btnFechar_clicked()
