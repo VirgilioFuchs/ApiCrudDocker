@@ -16,6 +16,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.application
+import io.ktor.server.routing.delete
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import org.jetbrains.exposed.sql.selectAll
@@ -100,7 +102,7 @@ fun Route.alunoResponsavelRoutes() {
                 }
                 val idResponsavel = aluno[Alunos.id_Responsavel]
 
-                responsavelService.atualizarResponsavel(idResponsavel, body.nomeResponsavel, body.telefoneResponsavel )
+                responsavelService.atualizarResponsavel(idResponsavel, body.nomeResponsavel, body.telefoneResponsavel)
 
                 val alunoUpdateReq = AlunosUpdateRequest(
                     nomeAluno = body.nomeAluno,
@@ -114,6 +116,7 @@ fun Route.alunoResponsavelRoutes() {
         } catch (e: NoSuchElementException) {
             statusCode = HttpStatusCode.NotFound
             message = "Aluno não encontrado com o ID fornecido."
+            application.log.error("Erro ao atualizar aluno/responsável: ", e)
         } catch (e: Exception) {
             statusCode = HttpStatusCode.InternalServerError
             message = "Ocorreu um erro inesperado durante a atualização."
@@ -121,5 +124,61 @@ fun Route.alunoResponsavelRoutes() {
         }
 
         call.respond(statusCode, mapOf("message" to message))
+    }
+
+    get("/alunos/search") {
+        val nomeAluno = call.request.queryParameters["nomeAluno"]
+        val rgAluno = call.request.queryParameters["rgAluno"]
+        val cpfAluno = call.request.queryParameters["cpfAluno"]
+        val nomeResponsavel = call.request.queryParameters["nomeResponsavel"]
+
+        if (nomeAluno.isNullOrBlank() && rgAluno.isNullOrBlank() && cpfAluno.isNullOrBlank() && nomeResponsavel.isNullOrBlank()) {
+            call.respond(
+                HttpStatusCode.BadRequest,
+                "O padrão de busca 'nome, cpf, rg ou nome do responsavel' é obrigatório"
+            )
+            return@get
+        }
+
+        try {
+            val resultados = alunoService.pesquisarAluno(nomeAluno, nomeResponsavel, cpfAluno, rgAluno)
+
+            call.respond(HttpStatusCode.OK, resultados)
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, "Ocorreu um erro de pesquisa: ${e.message}")
+        }
+    }
+
+    get("/alunos") {
+        try {
+            val listaDeAlunos = alunoService.listarTodosAlunos()
+
+            call.respond(HttpStatusCode.OK, listaDeAlunos)
+        } catch (e: Exception) {
+            application.log.error("Erro ao listar alunos: ", e)
+            call.respond(HttpStatusCode.InternalServerError, "Ocorreu um erro ao buscar os dados.")
+        }
+    }
+
+    delete("/alunos/{id}") {
+        val id = call.parameters["id"]?.toIntOrNull()
+        if (id == null) {
+            call.respond(HttpStatusCode.BadRequest, "ID do aluno inválido ou ausente.")
+            return@delete
+        }
+
+        try {
+            val resultado = alunoService.deletarAlunoEVerificarResponsavel(id)
+
+            if (resultado.contains("não encontrado")) {
+                call.respond(HttpStatusCode.NotFound, mapOf("mensagem" to resultado))
+            } else {
+                call.respond(HttpStatusCode.OK, mapOf("mensagem" to resultado))
+            }
+
+        } catch (e: Exception) {
+            application.log.error("Erro ao deletar aluno e verificar responsável: ", e)
+            call.respond(HttpStatusCode.InternalServerError, "Ocorreu um erro ao deletar.")
+        }
     }
 }
