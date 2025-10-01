@@ -3,6 +3,7 @@ package com.anglo
 import com.anglo.routes.alunoResponsavelRoutes
 import com.anglo.routes.userRoutes
 import io.ktor.server.application.*
+import io.ktor.server.auth.authentication
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 

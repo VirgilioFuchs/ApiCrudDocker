@@ -78,12 +78,7 @@ class AlunoService {
         return atualizado > 0
     }
 
-    fun pesquisarAluno(
-        nomeAluno: String?,
-        nomeResponsavel: String?,
-        cpfAluno: String?,
-        rgAluno: String?
-    ): List<AlunoResponsavelSearch> {
+    fun pesquisarAluno(q: String?): List<AlunoResponsavelSearch> {
         return transaction {
             Alunos.join(
                 otherTable = Responsavel,
@@ -93,10 +88,10 @@ class AlunoService {
             )
                 .selectAll()
                 .where {
-                    (Alunos.nomeAluno like "%${nomeAluno}%") or
-                            (Responsavel.nomeResponsavel like "%${nomeResponsavel}%") or
-                            (Alunos.cpfAluno like "%${cpfAluno}%") or
-                            (Alunos.rgAluno like "%${rgAluno}%")
+                    (Alunos.nomeAluno like "%${q}%") or
+                            (Responsavel.nomeResponsavel like "%${q}%") or
+                            (Alunos.cpfAluno like "%${q}%") or
+                            (Alunos.rgAluno like "%${q}%")
                 }
                 .map { linha ->
                     AlunoResponsavelSearch(
