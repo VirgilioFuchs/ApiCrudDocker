@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    find_package(Qt6 REQUIRED COMPONENTS Core)
+
     qt_add_executable(first_application
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
@@ -27,6 +29,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         telamenu.h telamenu.cpp telamenu.ui
         telaadicionar.h telaadicionar.cpp telaadicionar.ui
         telaeditar.h telaeditar.cpp telaeditar.ui
+        alunotablemodel.h alunotablemodel.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
@@ -53,6 +56,7 @@ target_link_libraries(first_application PRIVATE
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Sql
 )
+target_link_libraries(first_application PRIVATE Qt6::Core)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

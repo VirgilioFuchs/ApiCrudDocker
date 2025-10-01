@@ -6,52 +6,38 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QModelIndex>
-#include <QSqlTableModel>
-#include <QSqlQueryModel>
-#include <QSqlError>
-#include <QSqlQuery>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QMessageBox>
+#include <QDebug>
+#include <QDir>
+#include <QUrlQuery>
+
 
 TelaMenu::TelaMenu(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::TelaMenu)
     , telaLogin(nullptr)
+    , conexao(new QNetworkAccessManager(this))
+    , modelo(new AlunoTableModel(this))
 {
     ui->setupUi(this);
+    ui->tableDados->setModel(modelo);
 
     connect(ui->actionLogout, &QAction::triggered,
             this, &TelaMenu::fazerLogout);
-
-    QSqlQueryModel *exibirDadosAlunos = new QSqlQueryModel(this);
-    exibirDadosAlunos->setQuery(
-        "SELECT a.id, a.nomeAluno, a.dataNascimento, a.sexoAluno, a.cpfAluno, a.rgAluno, "
-        "r.id AS id, r.nomeResponsavel, r.telefoneResponsavel "
-        "FROM alunos a "
-        "JOIN responsavel r ON a.id_Responsavel = r.id"
-        );
-
-    if (exibirDadosAlunos->lastError().isValid()) {
-        qDebug() << "Erro SQL:" << exibirDadosAlunos->lastError().text();
-    }
-
-    exibirDadosAlunos->setHeaderData(0, Qt::Horizontal, "RM");
-    exibirDadosAlunos->setHeaderData(1, Qt::Horizontal, "Aluno");
-    exibirDadosAlunos->setHeaderData(2, Qt::Horizontal, "Nascimento");
-    exibirDadosAlunos->setHeaderData(3, Qt::Horizontal, "Sexo");
-    exibirDadosAlunos->setHeaderData(4, Qt::Horizontal, "CPF");
-    exibirDadosAlunos->setHeaderData(5, Qt::Horizontal, "RG");
-    exibirDadosAlunos->setHeaderData(6, Qt::Horizontal, "Cod Resp.");
-    exibirDadosAlunos->setHeaderData(7, Qt::Horizontal, "Responsável");
-    exibirDadosAlunos->setHeaderData(8, Qt::Horizontal, "Telefone Resp.");
-
-    ui->tableDados->setModel(exibirDadosAlunos);
-    ui->tableDados->resizeColumnsToContents();
-    ui->tableDados->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     ui->btnPesquisar->installEventFilter(this);
     ui->btnAdicionar->installEventFilter(this);
     ui->btnEditar->installEventFilter(this);
     ui->btnExcluir->installEventFilter(this);
     ui->btnAtualizar->installEventFilter(this);
+
+    QMessageBox::information(this, "Bem-vindo!",
+                             "Olá, seja bem-vindo ao sistema de cadastro de alunos!");
+
+    carregarAlunos();
 }
 
 TelaMenu::~TelaMenu()
@@ -59,50 +45,41 @@ TelaMenu::~TelaMenu()
     delete ui;
 }
 
+void TelaMenu::onListarReply(QNetworkReply *resposta) {
+    if (resposta->error()) {
+        QMessageBox::critical(this, "Erro", "Erro ao buscar os dados do aluno!");
+        qDebug() << "Erro da pesquisa:" << resposta->errorString();
+        resposta->deleteLater();
+        return;
+    }
+
+    QByteArray respostaData = resposta->readAll();
+    QJsonDocument docJson = QJsonDocument::fromJson(respostaData);
+
+    if (!docJson.isArray()) {
+        QMessageBox::critical(this, "Erro", "Resposta inesperada do servidor!");
+        resposta->deleteLater();
+        return;
+    }
+
+    QJsonArray array = docJson.array();
+    modelo->setDataFromJson(array);
+
+    ui->lApresentar->setText("Todos os dados estão listados na tabela!");
+
+    resposta->deleteLater();
+
+}
+
 void TelaMenu::on_btnPesquisar_clicked()
 {
     QString pesquisa = ui->leBarraPesquisa->text();
 
-    QSqlQueryModel *model = new QSqlQueryModel(this);
-
-    QString sql = QString(
-        "SELECT a.id, a.nomeAluno, a.dataNascimento, a.sexoAluno, "
-        "a.rgAluno, a.cpfAluno, r.id, r.nomeResponsavel, r.telefoneResponsavel "
-        "FROM alunos a "
-        "JOIN responsavel r ON a.id_Responsavel = r.id "
-        "WHERE a.nomeAluno LIKE '%%1%' OR r.nomeResponsavel LIKE '%%1%' OR a.cpfAluno LIKE '%%1%' OR a.rgAluno LIKE '%%1%'"
-                      ).arg(pesquisa);
-
-    model->setQuery(sql);
-
-    if (model->lastError().isValid()) {
-        QMessageBox::critical(this, "Erro!", "Erro ao Pesquisar!");
-        qDebug() << "ERRO: " << model->lastError().text();
-        return;
-    }
-
     if (pesquisa.isEmpty()) {
-        sql = "SELECT a.id, a.nomeAluno, a.dataNascimento, a.sexoAluno, "
-              "a.rgAluno, a.cpfAluno, r.id, r.nomeResponsavel, r.telefoneResponsavel "
-              "FROM alunos a "
-              "JOIN responsavel r ON a.id_Responsavel = r.id ";
+        carregarAlunos();
+    } else {
+        pesquisarAlunos(pesquisa);
     }
-
-    model->setHeaderData(0, Qt::Horizontal, "RM");
-    model->setHeaderData(1, Qt::Horizontal, "Aluno");
-    model->setHeaderData(2, Qt::Horizontal, "Nascimento");
-    model->setHeaderData(3, Qt::Horizontal, "Sexo");
-    model->setHeaderData(4, Qt::Horizontal, "CPF");
-    model->setHeaderData(5, Qt::Horizontal, "RG");
-    model->setHeaderData(6, Qt::Horizontal, "Cod Resp.");
-    model->setHeaderData(7, Qt::Horizontal, "Responsável");
-    model->setHeaderData(8, Qt::Horizontal, "Telefone Resp.");
-
-    ui->tableDados->setModel(model);
-    ui->tableDados->resizeColumnsToContents();
-    ui->tableDados->horizontalHeader()->setStretchLastSection(true);
-
-    ui->leBarraPesquisa->clear();
 }
 
 
@@ -114,7 +91,7 @@ void TelaMenu::on_btnAdicionar_clicked()
     telaAdicionar->setWindowTitle("Cadastro de Aluno");
     telaAdicionar->resize(836,522);
     connect(telaAdicionar, &TelaAdicionar::dadosInseridos,
-            this, &TelaMenu::atualizarTabela);
+            this, &TelaMenu::atualizarLista);
     telaAdicionar->show();
 }
 
@@ -147,8 +124,23 @@ void TelaMenu::on_btnEditar_clicked()
     editar->setWindowTitle("Editar dados do Aluno");
     editar->resize(926,643);
     connect(editar, &TelaEditar::dadosInseridos,
-            this, &TelaMenu::atualizarTabela);
+            this, &TelaMenu::atualizarLista);
     editar->show();
+}
+
+void TelaMenu::onDeletarReply(QNetworkReply *resposta)
+{
+    if (resposta->error()) {
+        QMessageBox::critical(this, "Erro", "Erro ao deletar os dados do aluno!" + resposta->errorString());
+        resposta->deleteLater();
+        return;
+    }
+
+    QByteArray respostaData = resposta->readAll();
+
+    QMessageBox::information(this, "Sucesso", "Aluno e responsável deletado com sucesso!");
+    carregarAlunos();
+    resposta->deleteLater();
 }
 
 void TelaMenu::on_btnExcluir_clicked()
@@ -163,102 +155,60 @@ void TelaMenu::on_btnExcluir_clicked()
     int linhaSelecionada = index.row();
 
     int idAluno = ui->tableDados->model()->index(linhaSelecionada, 0).data().toInt();
-    int idResponsavel = ui->tableDados->model()->index(linhaSelecionada,6).data().toInt();
 
     auto resposta = QMessageBox::question(
         this,
         "Confirmação",
-        "Tem certeza que deseja excluir este aluno? (Será excluido os dados do responsável também!)",
+        QString("Tem certeza que deseja excluir este aluno com o ID %1? (Será excluido os dados do responsável também!)").arg(idAluno),
         QMessageBox::Yes | QMessageBox::No);
 
     if (resposta == QMessageBox::No){
         return;
     }
 
-    QSqlQuery query1, query2;
+    QUrl url(QString("http://127.0.0.1:8080/alunos/%1").arg(idAluno));
+    QNetworkRequest request(url);
+    QNetworkReply *reply = conexao->deleteResource(request);
 
-    query1.prepare("DELETE FROM alunos WHERE id = :rmAluno");
-    query1.bindValue(":rmAluno", idAluno);
-
-    if(!query1.exec()) {
-        QMessageBox::critical(this, "Erro!", "Erro ao excluir aluno!");
-        return;
-    }
-
-    query2.prepare("DELETE FROM responsavel WHERE id = :idResponsavel");
-    query2.bindValue(":idResponsavel", idResponsavel);
-
-    if(!query2.exec()) {
-        QMessageBox::critical(this, "Erro!", "Erro ao excluir o Responsável!");
-        return;
-    }
-
-    QMessageBox::information(this, "Sucesso!", "Dados do aluno e responsável excluído com sucesso!");
-
-    QSqlQueryModel *exibirDadosAlunos = new QSqlQueryModel(this);
-
-    exibirDadosAlunos->setQuery(
-        "SELECT a.id, a.nomeAluno, a.dataNascimento, a.sexoAluno, a.cpfAluno, a.rgAluno, "
-        "r.id AS id, r.nomeResponsavel, r.telefoneResponsavel "
-        "FROM alunos a "
-        "JOIN responsavel r ON a.id_Responsavel = r.id"
-        );
-
-    if (exibirDadosAlunos->lastError().isValid()) {
-        qDebug() << "Erro SQL:" << exibirDadosAlunos->lastError().text();
-    }
-
-    exibirDadosAlunos->setHeaderData(0, Qt::Horizontal, "RM");
-    exibirDadosAlunos->setHeaderData(1, Qt::Horizontal, "Aluno");
-    exibirDadosAlunos->setHeaderData(2, Qt::Horizontal, "Nascimento");
-    exibirDadosAlunos->setHeaderData(3, Qt::Horizontal, "Sexo");
-    exibirDadosAlunos->setHeaderData(4, Qt::Horizontal, "CPF");
-    exibirDadosAlunos->setHeaderData(5, Qt::Horizontal, "RG");
-    exibirDadosAlunos->setHeaderData(6, Qt::Horizontal, "Cod Resp.");
-    exibirDadosAlunos->setHeaderData(7, Qt::Horizontal, "Responsável");
-    exibirDadosAlunos->setHeaderData(8, Qt::Horizontal, "Telefone Resp.");
-
-    ui->tableDados->setModel(exibirDadosAlunos);
-    ui->tableDados->resizeColumnsToContents();
-    ui->tableDados->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    connect(reply, &QNetworkReply::finished, this, [=](){
+        onDeletarReply(reply);
+    });
 }
 
 
 void TelaMenu::on_btnAtualizar_clicked()
 {
-    atualizarTabela();
+    carregarAlunos();
 }
 
-void TelaMenu::atualizarTabela()
-{
-    QSqlQueryModel *exibirDadosAlunos = new QSqlQueryModel(this);
-    exibirDadosAlunos->setQuery(
-        "SELECT a.id, a.nomeAluno, a.dataNascimento, a.sexoAluno, a.cpfAluno, a.rgAluno, "
-        "r.id AS id, r.nomeResponsavel, r.telefoneResponsavel "
-        "FROM alunos a "
-        "JOIN responsavel r ON a.id_Responsavel = r.id"
-        );
+void TelaMenu::atualizarLista() {
+    carregarAlunos();
+}
 
-    if (exibirDadosAlunos->lastError().isValid()) {
-        qDebug() << "Erro SQL:" << exibirDadosAlunos->lastError().text();
-    }
+void TelaMenu::carregarAlunos() {
+    QUrl url("http://127.0.0.1:8080/alunos");
 
-    exibirDadosAlunos->setHeaderData(0, Qt::Horizontal, "RM");
-    exibirDadosAlunos->setHeaderData(1, Qt::Horizontal, "Aluno");
-    exibirDadosAlunos->setHeaderData(2, Qt::Horizontal, "Nascimento");
-    exibirDadosAlunos->setHeaderData(3, Qt::Horizontal, "Sexo");
-    exibirDadosAlunos->setHeaderData(4, Qt::Horizontal, "CPF");
-    exibirDadosAlunos->setHeaderData(5, Qt::Horizontal, "RG");
-    exibirDadosAlunos->setHeaderData(6, Qt::Horizontal, "Cod Resp.");
-    exibirDadosAlunos->setHeaderData(7, Qt::Horizontal, "Responsável");
-    exibirDadosAlunos->setHeaderData(8, Qt::Horizontal, "Telefone Resp.");
+    QNetworkRequest request(url);
+    QNetworkReply *resposta = conexao->get(request);
 
-    ui->tableDados->setModel(exibirDadosAlunos);
-    ui->tableDados->resizeColumnsToContents();
-    ui->tableDados->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    connect(resposta, &QNetworkReply::finished, this, [=]() {
+        onListarReply(resposta);
+    });
+}
 
-    qDebug() << "Dados Atualizados na tabela";
-    ui->lApresentar->setText("Dados Atualizados na tabela!");
+void TelaMenu::pesquisarAlunos(const QString &pesquisa) {
+    QUrl url("http://127.0.0.1:8080/alunos/search");
+    QUrlQuery query;
+
+    query.addQueryItem("q", pesquisa);
+    url.setQuery(query);
+
+    QNetworkRequest request(url);
+    QNetworkReply *resposta = conexao->get(request);
+
+    connect(resposta, &QNetworkReply::finished, this, [=]() {
+        onListarReply(resposta);
+    });
 }
 
 bool TelaMenu::eventFilter(QObject *watched, QEvent *event)

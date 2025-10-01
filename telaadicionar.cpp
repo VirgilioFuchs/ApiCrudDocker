@@ -100,7 +100,6 @@ void TelaAdicionar::respostaSelecionadaSexo(int id)
 {
     respostaSexo = id;
     QAbstractButton *button = grupoSexoAluno->button(id);
-    qDebug() << "Foi selecionado o botão:" << button->text();
 }
 
 void TelaAdicionar::onCadastroReply(QNetworkReply *resposta)
