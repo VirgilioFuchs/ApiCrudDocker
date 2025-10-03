@@ -45,6 +45,14 @@ TelaMenu::~TelaMenu()
     delete ui;
 }
 
+// Passa o Token da Tela login para o Menu
+void TelaMenu::setTelaLogin(TelaInicial *login) {
+    telaLogin = login;
+    if (telaLogin) {
+        jwtToken = telaLogin->getJwtToken();
+    }
+}
+
 void TelaMenu::onListarReply(QNetworkReply *resposta) {
     if (resposta->error()) {
         QMessageBox::critical(this, "Erro", "Erro ao buscar os dados do aluno!");
@@ -90,6 +98,7 @@ void TelaMenu::on_btnAdicionar_clicked()
     telaAdicionar->setWindowFlags(Qt::Window);
     telaAdicionar->setWindowTitle("Cadastro de Aluno");
     telaAdicionar->resize(836,522);
+    telaAdicionar->setJwtToken(jwtToken);
     connect(telaAdicionar, &TelaAdicionar::dadosInseridos,
             this, &TelaMenu::atualizarLista);
     telaAdicionar->show();
@@ -123,6 +132,7 @@ void TelaMenu::on_btnEditar_clicked()
     editar->setWindowFlags(Qt::Window);
     editar->setWindowTitle("Editar dados do Aluno");
     editar->resize(926,643);
+    editar->setJwtToken(jwtToken);
     connect(editar, &TelaEditar::dadosInseridos,
             this, &TelaMenu::atualizarLista);
     editar->show();
@@ -168,8 +178,9 @@ void TelaMenu::on_btnExcluir_clicked()
 
     QUrl url(QString("http://127.0.0.1:8080/alunos/%1").arg(idAluno));
     QNetworkRequest request(url);
-    QNetworkReply *reply = conexao->deleteResource(request);
+    request.setRawHeader("Authorization", ("Bearer " + jwtToken).toUtf8());
 
+    QNetworkReply *reply = conexao->deleteResource(request);
     connect(reply, &QNetworkReply::finished, this, [=](){
         onDeletarReply(reply);
     });
@@ -189,8 +200,9 @@ void TelaMenu::carregarAlunos() {
     QUrl url("http://127.0.0.1:8080/alunos");
 
     QNetworkRequest request(url);
-    QNetworkReply *resposta = conexao->get(request);
+    request.setRawHeader("Authorization", ("Bearer " + jwtToken).toUtf8());
 
+    QNetworkReply *resposta = conexao->get(request);
     connect(resposta, &QNetworkReply::finished, this, [=]() {
         onListarReply(resposta);
     });
@@ -204,8 +216,9 @@ void TelaMenu::pesquisarAlunos(const QString &pesquisa) {
     url.setQuery(query);
 
     QNetworkRequest request(url);
-    QNetworkReply *resposta = conexao->get(request);
+    request.setRawHeader("Authorization", ("Bearer " + jwtToken).toUtf8());
 
+    QNetworkReply *resposta = conexao->get(request);
     connect(resposta, &QNetworkReply::finished, this, [=]() {
         onListarReply(resposta);
     });
@@ -229,10 +242,6 @@ bool TelaMenu::eventFilter(QObject *watched, QEvent *event)
         ui->lApresentar->setText("...");
     }
     return QMainWindow::eventFilter(watched, event);
-}
-
-void TelaMenu::setTelaLogin(QWidget *login) {
-    telaLogin = login;
 }
 
 void TelaMenu::fazerLogout()

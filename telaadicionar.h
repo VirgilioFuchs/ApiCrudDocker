@@ -22,6 +22,8 @@ public:
     explicit TelaAdicionar(QWidget *parent = nullptr);
     ~TelaAdicionar();
 
+    void setJwtToken(const QString &token) { jwtToken = token;}
+
 private slots:
     void on_btnAdicionarFoto_clicked();
 
@@ -39,6 +41,7 @@ private:
     QButtonGroup *grupoSexoAluno;
     int respostaSexo;
     QNetworkAccessManager *conexao;
+    QString jwtToken;
 };
 
 #endif // TELAADICIONAR_H

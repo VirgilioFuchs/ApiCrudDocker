@@ -32,6 +32,8 @@ void dadosAlunos(int rmAluno,
                  const QString &telefoneResponsavel
                     );
 
+void setJwtToken(const QString &token) { jwtToken = token;}
+
 private slots:
     void on_btnAlterarDados_clicked();
 
@@ -44,6 +46,7 @@ private:
     QButtonGroup *grupoSexo;
     int idAluno;
     QNetworkAccessManager *conexao;
+    QString jwtToken;
 };
 
 #endif // TELAEDITAR_H

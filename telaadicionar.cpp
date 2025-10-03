@@ -79,6 +79,8 @@ void TelaAdicionar::on_btnCadastrar_clicked()
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
+    request.setRawHeader("Authorization", ("Baerer " + jwtToken).toUtf8());
+
     QJsonObject json;
     json["nomeAluno"] = nomeAluno;
     json["dataNascimento"] = dataFormatada;

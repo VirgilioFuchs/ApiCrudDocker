@@ -21,9 +21,9 @@ public:
     explicit TelaMenu(QWidget *parent = nullptr);
     ~TelaMenu();
 
-    void setTelaLogin(TelaInicial *login) { telaLogin = login; }
+    void setTelaLogin(TelaInicial *login);
 
-    QString getJwtToken() const;
+    QString getJwtToken() const { return jwtToken; }
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -42,8 +42,6 @@ private slots:
     void on_btnAtualizar_clicked();
 
     void atualizarLista();
-
-    // void onPesquisarReply(QNetworkReply *resposta);
 
     void onListarReply(QNetworkReply *resposta);
 
