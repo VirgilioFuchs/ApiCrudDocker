@@ -36,8 +36,6 @@ TelaMenu::TelaMenu(QWidget *parent)
 
     QMessageBox::information(this, "Bem-vindo!",
                              "Olá, seja bem-vindo ao sistema de cadastro de alunos!");
-
-    carregarAlunos();
 }
 
 TelaMenu::~TelaMenu()
@@ -51,6 +49,7 @@ void TelaMenu::setTelaLogin(TelaInicial *login) {
     if (telaLogin) {
         jwtToken = telaLogin->getJwtToken();
     }
+    carregarAlunos();
 }
 
 void TelaMenu::onListarReply(QNetworkReply *resposta) {
@@ -82,6 +81,7 @@ void TelaMenu::onListarReply(QNetworkReply *resposta) {
 void TelaMenu::on_btnPesquisar_clicked()
 {
     QString pesquisa = ui->leBarraPesquisa->text();
+    ui->leBarraPesquisa->clear();
 
     if (pesquisa.isEmpty()) {
         carregarAlunos();
@@ -120,8 +120,8 @@ void TelaMenu::on_btnEditar_clicked()
     QVariant dataNascVar = ui->tableDados->model()->index(linhaSelecionada, 2).data();
     QDate dataNascimentoAluno = dataNascVar.toDate();
     QString sexoAluno = ui->tableDados->model()->index(linhaSelecionada, 3).data().toString();
-    QString cpfAluno = ui->tableDados->model()->index(linhaSelecionada, 4).data().toString();
-    QString rgAluno = ui->tableDados->model()->index(linhaSelecionada, 5).data().toString();
+    QString rgAluno = ui->tableDados->model()->index(linhaSelecionada, 4).data().toString();
+    QString cpfAluno = ui->tableDados->model()->index(linhaSelecionada, 5).data().toString();
     QString nomeResponsavel = ui->tableDados->model()->index(linhaSelecionada, 7).data().toString();
     QString telefoneResponsavel = ui->tableDados->model()->index(linhaSelecionada, 8).data().toString();
 
@@ -253,6 +253,7 @@ void TelaMenu::fazerLogout()
 
     if (resposta == QMessageBox::Yes) {
         this->close();
+        jwtToken.clear();
         if (telaLogin) {
             telaLogin->show();
         }

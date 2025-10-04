@@ -43,7 +43,7 @@ void TelaInicial::on_btnLogin_clicked()
 
     QUrl url("http://127.0.0.1:8080/login");
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
     QJsonObject loginData;
     loginData["nome"] = nome;

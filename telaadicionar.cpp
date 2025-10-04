@@ -77,9 +77,9 @@ void TelaAdicionar::on_btnCadastrar_clicked()
 
     QUrl url("http://127.0.0.1:8080/registerAlunoAndResponsavel");
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
-    request.setRawHeader("Authorization", ("Baerer " + jwtToken).toUtf8());
+    request.setRawHeader("Authorization", ("Bearer " + jwtToken).toUtf8());
 
     QJsonObject json;
     json["nomeAluno"] = nomeAluno;

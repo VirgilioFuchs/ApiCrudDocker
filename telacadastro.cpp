@@ -34,9 +34,10 @@ void TelaCadastro::on_btnCadastrar_clicked()
         return;
     }
 
+
     QUrl url("http://127.0.0.1:8080/register");
     QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
     QJsonObject json;
     json["nome"] = nomeCadastro;

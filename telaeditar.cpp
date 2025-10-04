@@ -60,7 +60,8 @@ void TelaEditar::on_btnAlterarDados_clicked()
     QString urlString = QString("http://127.0.0.1:8080/alunos/%1").arg(idAluno);
     QNetworkRequest request((QUrl(urlString)));
 
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
+    request.setRawHeader("Authorization", ("Bearer " + jwtToken).toUtf8());
 
     QJsonObject json;
     json["nomeAluno"] = nomeAluno;
@@ -91,7 +92,7 @@ void TelaEditar::onUpdateReply(QNetworkReply *resposta)
     QString resp = QString::fromUtf8(respostaData);
 
     if (resp.contains("Aluno e Responsavel atualizados com sucesso!", Qt::CaseInsensitive)) {
-        QMessageBox::information(this, "Sucesso!", "Cadastro realizado com sucesso!");
+        QMessageBox::information(this, "Sucesso!", "Dados alterados com sucesso!");
         emit dadosInseridos();
         this->close();
     } else {
