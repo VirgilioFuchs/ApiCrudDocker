@@ -1,5 +1,5 @@
 # Usa imagem com JDK
-FROM eclipse-temurin:23-jdk
+FROM eclipse-temurin:24-jdk
 
 # Cria diretório no container
 WORKDIR /app
